@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scope of work</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="section-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/proposal-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    ProposalApp.initShell("scope-of-work");
+    (function () {
+      const s = window.PROPOSAL_DATA.scopeOfWork;
+      const esc = ProposalApp.escapeHtml;
+
+      const wsHtml = s.workstreams
+        .map(
+          (w) => `
+          <div class="card card-accent-top">
+            <h2 class="card-title">${esc(w.title)}</h2>
+            <ul class="styled-list">
+              ${w.items.map((i) => `<li>${esc(i)}</li>`).join("")}
+            </ul>
+          </div>
+        `
+        )
+        .join("");
+
+      const delHtml = s.deliverablesTable
+        .map(
+          (d) => `
+          <tr>
+            <td><strong>${esc(d.id)}</strong></td>
+            <td>${esc(d.deliverable)}</td>
+            <td><span class="badge badge-grey">${esc(d.phase)}</span></td>
+            <td>${esc(d.owner)}</td>
+            <td>${esc(d.signoff)}</td>
+          </tr>
+        `
+        )
+        .join("");
+
+      document.getElementById("section-root").innerHTML = `
+        <div class="section-header">
+          <div class="section-eyebrow">Section 04</div>
+          <h1 class="section-title">Scope of work</h1>
+          <p class="section-lead">${esc(s.lead)}</p>
+        </div>
+
+        <div class="card mb-24">
+          <p>${esc(s.overview)}</p>
+        </div>
+
+        <div class="grid-3 mb-24">${wsHtml}</div>
+
+        <h2 class="card-title mt-24 mb-16">Key Deliverables &amp; Sign-Off Matrix</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Deliverable</th>
+                <th>Phase</th>
+                <th>Owner</th>
+                <th>Sign-Off Authority</th>
+              </tr>
+            </thead>
+            <tbody>${delHtml}</tbody>
+          </table>
+        </div>
+      `;
+    })();
+  </script>
+</body>
+</html>

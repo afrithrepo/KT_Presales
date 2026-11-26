@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Proposal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="home-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/proposal-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    ProposalApp.initShell("home");
+    (function () {
+      const d = window.PROPOSAL_DATA;
+      const esc = ProposalApp.escapeHtml;
+      const sections = window.PROPOSAL_PAGES.filter((p) => p.id !== "home");
+
+      const cardsHtml = sections
+        .map(
+          (s) => `
+          <a class="toc-card" href="${s.href}">
+            <div>
+              <div class="toc-card-num">Section ${esc(s.num)}</div>
+              <div class="toc-card-title">${esc(s.title)}</div>
+              <p class="toc-card-desc">${esc(s.desc)}</p>
+            </div>
+            <span class="toc-card-link">Open Section →</span>
+          </a>
+        `
+        )
+        .join("");
+
+      document.getElementById("home-root").innerHTML = `
+        <section class="hero-banner">
+          <div class="hero-kicker">${esc(d.meta.proposalTitle)}</div>
+          <h1 class="hero-title">${esc(d.meta.projectTitle)}</h1>
+          <p class="hero-subtitle">${esc(d.meta.subtitle)}</p>
+
+          <div class="hero-meta-grid">
+            <div class="hero-meta-item">
+              <label>Prepared For</label>
+              <span>${esc(d.meta.clientName)}</span>
+            </div>
+            <div class="hero-meta-item">
+              <label>Prepared By</label>
+              <span>${esc(d.meta.preparedBy)}</span>
+            </div>
+            <div class="hero-meta-item">
+              <label>Date</label>
+              <span>${esc(d.meta.date)}</span>
+            </div>
+            <div class="hero-meta-item">
+              <label>Validity</label>
+              <span>${esc(d.meta.validUntil)}</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn-primary" href="executive-summary.html">Start Reading Proposal →</a>
+            <button class="btn-secondary" type="button" onclick="window.print()">Print / Export PDF</button>
+          </div>
+        </section>
+
+        <div class="card card-accent-top mb-24">
+          <h2 class="card-title">${esc(d.home.welcomeHeading)}</h2>
+          <p>${esc(d.home.welcomeText)}</p>
+        </div>
+
+        <h2 class="card-title mt-24">Proposal Sections</h2>
+        <div class="toc-grid">${cardsHtml}</div>
+      `;
+    })();
+  </script>
+</body>
+</html>

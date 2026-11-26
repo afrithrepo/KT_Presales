@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaarTech — Technical Proposal</title>
+  <style>
+    /* ==========================================================================
+       KaarTech Technical Proposal — Single-File Self-Contained Template
+       Brand Palette:
+         - Red:       #9D0102
+         - Orange:    #FF3F00
+         - Grey:      #C0C0C0
+         - Dark Grey: #606062
+       ========================================================================== */
+    :root {
+      --kt-red: #9D0102;
+      --kt-red-dark: #7A0102;
+      --kt-red-soft: rgba(157, 1, 2, 0.08);
+      --kt-orange: #FF3F00;
+      --kt-orange-soft: rgba(255, 63, 0, 0.10);
+      --kt-grey: #C0C0C0;
+      --kt-grey-light: #E8E8EA;
+      --kt-dark-grey: #606062;
+
+      --bg-page: #F5F5F7;
+      --bg-surface: #FFFFFF;
+      --bg-sidebar: #1E1E20;
+      --text-primary: #1F1F21;
+      --text-secondary: #606062;
+      --text-on-dark: #F5F5F7;
+
+      --sidebar-width: 290px;
+      --topbar-height: 64px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: var(--kt-red); text-decoration: none; transition: color 0.2s ease; }
+    a:hover { color: var(--kt-orange); }
+
+    /* Shell */
+    .app-shell { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      color: var(--text-on-dark);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      border-right: 1px solid rgba(192, 192, 192, 0.15);
+      transition: transform 0.3s ease;
+    }
+    .sidebar-brand {
+      padding: 22px 24px;
+      border-bottom: 1px solid rgba(192, 192, 192, 0.14);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--kt-red) 0%, var(--kt-orange) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem; color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .brand-text { display: flex; flex-direction: column; min-width: 0; }
+    .brand-name { font-size: 1rem; font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-tagline { font-size: 0.72rem; color: var(--kt-grey); text-transform: uppercase; letter-spacing: 0.8px; }
+    .sidebar-meta {
+      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(192, 192, 192, 0.1);
+      font-size: 0.78rem;
+    }
+    .sidebar-meta-label { color: var(--kt-grey); text-transform: uppercase; letter-spacing: 0.7px; font-size: 0.68rem; margin-bottom: 2px; }
+    .sidebar-meta-client { color: #FFFFFF; font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 12px; }
+    .nav-group-label {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--kt-grey); padding: 12px 12px 6px; font-weight: 600;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--radius-sm);
+      color: #D4D4D8; font-size: 0.86rem; font-weight: 500;
+      margin-bottom: 2px; transition: all 0.18s ease;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+    }
+    .nav-link:hover { background: rgba(255, 255, 255, 0.06); color: #FFFFFF; }
+    .nav-link.active {
+      background: linear-gradient(90deg, rgba(157, 1, 2, 0.28) 0%, rgba(255, 63, 0, 0.10) 100%);
+      color: #FFFFFF; font-weight: 600; border-left-color: var(--kt-orange);
+    }
+    .nav-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08); color: var(--kt-grey);
+      font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+    }
+    .nav-link.active .nav-num { background: var(--kt-orange); color: #FFFFFF; }
+    .sidebar-footer {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(192, 192, 192, 0.14);
+      font-size: 0.75rem; color: var(--kt-grey);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .btn-print {
+      width: 100%; padding: 8px 12px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(192, 192, 192, 0.3); background: transparent;
+      color: #FFFFFF; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-print:hover { border-color: var(--kt-orange); background: rgba(255, 63, 0, 0.15); }
+
+    /* Main */
+    .main-wrapper { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-width: 0; }
+    .topbar {
+      height: var(--topbar-height); background: var(--bg-surface);
+      border-bottom: 1px solid var(--kt-grey-light); padding: 0 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .mobile-menu-btn {
+      display: none; background: none; border: 1px solid var(--kt-grey);
+      border-radius: var(--radius-sm); padding: 6px 10px; cursor: pointer;
+      color: var(--text-primary); font-size: 1.1rem;
+    }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); }
+    .breadcrumb-sep { color: var(--kt-grey); }
+    .breadcrumb-current { color: var(--kt-red); font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .proposal-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 999px;
+      background: var(--kt-red-soft); color: var(--kt-red);
+      font-size: 0.76rem; font-weight: 600;
+      border: 1px solid rgba(157, 1, 2, 0.18);
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--kt-orange); }
+    .page-content { flex: 1; padding: 36px 40px 60px; max-width: 1180px; width: 100%; margin: 0 auto; }
+
+    /* Hero */
+    .hero-banner {
+      background: linear-gradient(135deg, #1E1E20 0%, #2D1213 55%, var(--kt-red) 100%);
+      color: #FFFFFF; border-radius: var(--radius-lg); padding: 48px 44px;
+      position: relative; overflow: hidden; box-shadow: var(--shadow-lg); margin-bottom: 32px;
+    }
+    .hero-banner::after {
+      content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px;
+      border-radius: 50%; background: radial-gradient(circle, rgba(255, 63, 0, 0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px;
+      color: var(--kt-orange); background: rgba(255, 63, 0, 0.14);
+      border: 1px solid rgba(255, 63, 0, 0.35); padding: 5px 12px; border-radius: 999px; margin-bottom: 18px;
+    }
+    .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1.18; letter-spacing: -0.6px; margin-bottom: 14px; max-width: 780px; }
+    .hero-subtitle { font-size: 1.08rem; color: #E4E4E7; max-width: 700px; margin-bottom: 28px; line-height: 1.6; }
+    .hero-meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px; padding-top: 24px; border-top: 1px solid rgba(192, 192, 192, 0.22);
+    }
+    .hero-meta-item label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--kt-grey); margin-bottom: 3px; }
+    .hero-meta-item span { font-size: 0.95rem; font-weight: 600; color: #FFFFFF; }
+    .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px; background: var(--kt-orange);
+      color: #FFFFFF; font-weight: 600; font-size: 0.92rem; padding: 11px 22px;
+      border-radius: var(--radius-sm); border: none; cursor: pointer; transition: transform 0.15s ease, background 0.2s ease;
+    }
+    .btn-primary:hover { background: #E03700; color: #FFFFFF; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF; font-weight: 600; font-size: 0.92rem; padding: 11px 20px;
+      border-radius: var(--radius-sm); border: 1px solid rgba(192, 192, 192, 0.35); cursor: pointer;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.18); color: #FFFFFF; }
+
+    /* Section Header */
+    .section-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid var(--kt-grey-light); position: relative; }
+    .section-header::after {
+      content: ''; position: absolute; left: 0; bottom: -2px; width: 84px; height: 3px;
+      background: linear-gradient(90deg, var(--kt-red), var(--kt-orange));
+    }
+    .section-eyebrow { font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--kt-red); margin-bottom: 6px; }
+    .section-title { font-size: 2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.4px; line-height: 1.2; }
+    .section-lead { margin-top: 8px; font-size: 1.02rem; color: var(--text-secondary); max-width: 780px; }
+
+    /* Grids & Cards */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card { background: var(--bg-surface); border: 1px solid var(--kt-grey-light); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); }
+    .card-accent-top { border-top: 3px solid var(--kt-red); }
+    .card-orange-top { border-top: 3px solid var(--kt-orange); }
+    .card-title { font-size: 1.08rem; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .card-subtitle { font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 14px; }
+
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; margin-top: 16px; }
+    .toc-card {
+      background: var(--bg-surface); border: 1px solid var(--kt-grey-light); border-radius: var(--radius-md);
+      padding: 20px 22px; display: flex; flex-direction: column; justify-content: space-between;
+      transition: all 0.2s ease; box-shadow: var(--shadow-sm); cursor: pointer;
+    }
+    .toc-card:hover { border-color: var(--kt-red); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .toc-card-num { font-size: 0.74rem; font-weight: 700; color: var(--kt-orange); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .toc-card-title { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .toc-card-desc { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 14px; }
+    .toc-card-link { font-size: 0.82rem; font-weight: 600; color: var(--kt-red); display: inline-flex; align-items: center; gap: 4px; }
+
+    .kpi-card {
+      background: var(--bg-surface); border: 1px solid var(--kt-grey-light);
+      border-left: 4px solid var(--kt-red); border-radius: var(--radius-md);
+      padding: 18px 20px; box-shadow: var(--shadow-sm);
+    }
+    .kpi-value { font-size: 1.75rem; font-weight: 800; color: var(--kt-red); line-height: 1.15; }
+    .kpi-label { font-size: 0.84rem; font-weight: 600; color: var(--text-primary); margin-top: 4px; }
+    .kpi-note { font-size: 0.76rem; color: var(--text-secondary); margin-top: 2px; }
+
+    .callout { background: var(--kt-red-soft); border-left: 4px solid var(--kt-red); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 18px 22px; margin: 22px 0; }
+    .callout-orange { background: var(--kt-orange-soft); border-left-color: var(--kt-orange); }
+    .callout-title { font-weight: 700; font-size: 0.94rem; color: var(--kt-red); margin-bottom: 4px; }
+    .callout-orange .callout-title { color: #C23000; }
+
+    .styled-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .styled-list li { position: relative; padding-left: 22px; font-size: 0.94rem; color: var(--text-primary); }
+    .styled-list li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: var(--kt-orange); }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--kt-grey-light); border-radius: var(--radius-md); background: var(--bg-surface); box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: #2B2B2E; color: #FFFFFF; }
+    th { text-align: left; padding: 13px 16px; font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 13px 16px; border-top: 1px solid var(--kt-grey-light); color: var(--text-primary); vertical-align: top; }
+    tbody tr:hover { background: #FAFAFB; }
+
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; }
+    .badge-red { background: var(--kt-red-soft); color: var(--kt-red); }
+    .badge-orange { background: var(--kt-orange-soft); color: #C23000; }
+    .badge-grey { background: #EFEFF1; color: var(--kt-dark-grey); }
+
+    .arch-stack { display: flex; flex-direction: column; gap: 14px; }
+    .arch-layer { background: var(--bg-surface); border: 1px solid var(--kt-grey-light); border-left: 5px solid var(--kt-red); border-radius: var(--radius-md); padding: 18px 22px; box-shadow: var(--shadow-sm); }
+    .arch-layer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .arch-layer-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+    .arch-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .arch-chip { background: #F4F4F6; border: 1px solid var(--kt-grey); color: var(--text-primary); padding: 5px 12px; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 500; }
+
+    .phase-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .phase-card { background: var(--bg-surface); border: 1px solid var(--kt-grey-light); border-top: 4px solid var(--kt-red); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
+    .phase-step { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--kt-orange); margin-bottom: 4px; }
+    .phase-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .phase-duration { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--kt-grey-light); }
+
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+
+    /* Pagination */
+    .page-pagination {
+      margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--kt-grey-light);
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .page-nav-btn {
+      flex: 1; min-width: 220px; max-width: 340px;
+      background: var(--bg-surface); border: 1px solid var(--kt-grey-light);
+      border-radius: var(--radius-md); padding: 14px 18px;
+      display: flex; flex-direction: column; transition: all 0.2s ease; cursor: pointer;
+    }
+    .page-nav-btn:hover { border-color: var(--kt-red); box-shadow: var(--shadow-sm); }
+    .page-nav-btn.next { text-align: right; margin-left: auto; }
+    .page-nav-dir { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); font-weight: 600; }
+    .page-nav-title { font-size: 0.96rem; font-weight: 700; color: var(--kt-red); margin-top: 2px; }
+
+    @media (max-width: 960px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+      .main-wrapper { margin-left: 0; }
+      .mobile-menu-btn { display: inline-flex; }
+      .page-content { padding: 24px 20px 48px; }
+      .topbar { padding: 0 20px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero-banner { padding: 32px 24px; }
+      .hero-title { font-size: 1.85rem; }
+    }
+
+    /* Print-only Full Document Container (hidden on screen) */
+    #print-document { display: none; }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 16mm 15mm;
+      }
+
+      body {
+        background: #FFFFFF !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .app-shell { display: none !important; }
+      #print-document { display: block !important; }
+
+      .print-page-break {
+        break-before: page;
+        page-break-before: always;
+      }
+
+      /* Cover Page */
+      .print-cover {
+        height: 262mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        padding: 8mm 4mm;
+      }
+
+      .print-cover-image-wrap {
+        width: 100%;
+        height: 145mm;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--kt-grey-light);
+        background: #F4F4F6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .print-cover-image-wrap img,
+      .print-cover-image-wrap svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .print-cover-title-wrap {
+        margin-top: 18mm;
+        border-left: 6px solid var(--kt-red);
+        padding-left: 18px;
+      }
+
+      .print-cover-title {
+        font-size: 2.35rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+      }
+
+      .print-cover-date-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        padding-top: 12mm;
+      }
+
+      .print-cover-date {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--kt-dark-grey);
+        border-top: 2px solid var(--kt-orange);
+        padding-top: 6px;
+        min-width: 160px;
+        text-align: right;
+      }
+
+      /* Version Control & Confidentiality */
+      .print-doc-meta-page {
+        padding-top: 6mm;
+      }
+
+      .print-toc-list {
+        list-style: none;
+        margin-top: 16px;
+        border: 1px solid var(--kt-grey-light);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .print-toc-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--kt-grey-light);
+        font-size: 0.96rem;
+      }
+
+      .print-toc-item:last-child { border-bottom: none; }
+      .print-toc-num { font-weight: 700; color: var(--kt-red); width: 42px; display: inline-block; }
+      .print-toc-title { font-weight: 600; color: var(--text-primary); flex: 1; }
+      .print-toc-group { font-size: 0.78rem; color: var(--kt-dark-grey); text-transform: uppercase; letter-spacing: 0.6px; }
+
+      .card, .arch-layer, .phase-card, .kpi-card, .table-wrap, .callout {
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+
+      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="page-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+  <div id="print-document" aria-hidden="true"></div>
+
+  <script>
+    /**
+     * ========================================================================
+     * CUSTOMIZE YOUR PROPOSAL HERE (Everything lives in this single file!)
+     * ========================================================================
+     */
+    window.PROPOSAL_DATA = {
+      meta: {
+        brandName: "KaarTech",
+        brandInitials: "KT",
+        brandTagline: "Technical Proposal",
+        proposalTitle: "Technical Proposal",
+        coverTitle: "Technical proposal for mentioned scope",
+        coverImageUrl: "", // Optional: Paste customer office image URL, relative path, or Base64 data URI
+        projectTitle: "[Project Title: e.g., Enterprise Digital Core & Cloud Transformation]",
+        subtitle: "A tailored technical blueprint, delivery methodology, and governance framework designed to accelerate business outcomes.",
+        clientName: "[Client Organization Name]",
+        clientIndustry: "[Industry / Sector]",
+        proposalId: "KT-PROP-2026-001",
+        date: "November 26, 2026",
+        validUntil: "90 Days from Issue",
+        preparedBy: "[Presales Consultant / Solution Architect]",
+        statusBadge: "Confidential • Technical Proposal"
+      },
+      versionControl: [
+        { version: "1.0", date: "November 26, 2026", author: "[Presales Consultant]", description: "Initial Technical Proposal submission for client review." }
+      ],
+      confidentialityNotice: "This document contains confidential and proprietary information belonging to KaarTech and is intended solely for the use of [Client Organization Name] for evaluating this proposal. No part of this document may be reproduced, distributed, or disclosed to any third party without prior written consent from KaarTech.",
+      home: {
+        welcomeHeading: "Welcome to the Technical Proposal",
+        welcomeText: "This interactive web proposal replaces traditional static documents with a structured, easy-to-navigate digital experience. Use the sidebar or the section cards below to explore our solution architecture, scope of work, delivery methodology, governance model, and supporting appendices."
+      },
+      executiveSummary: {
+        lead: "High-level overview of the proposed engagement, strategic alignment, and expected business value.",
+        overview: "KaarTech is pleased to submit this Technical Proposal to [Client Organization Name]. Our proposed solution addresses your core operational challenges by establishing a scalable, secure, and future-ready technology foundation. By combining industry best practices with proven accelerators, we aim to minimize implementation risk while accelerating time-to-value.",
+        kpis: [
+          { value: "20–30%", label: "Process Efficiency Gain", note: "Through automation & streamlined workflows" },
+          { value: "99.9%", label: "Target System Availability", note: "Resilient cloud-native architecture" },
+          { value: "16 Weeks", label: "Target Delivery Timeline", note: "Phased, milestone-driven execution" },
+          { value: "100%", label: "Standards Compliance", note: "Aligned with enterprise security policies" }
+        ],
+        strategicObjectives: [
+          "Modernize legacy processes into a unified, real-time digital platform.",
+          "Eliminate data silos and enable executive visibility through governed analytics.",
+          "Ensure seamless integration with existing enterprise applications and third-party systems.",
+          "Establish a maintainable architecture with clear operational handover and enablement."
+        ],
+        valueProposition: "Our approach prioritizes measurable business outcomes over pure technical deployment—embedding change management, rigorous quality gates, and reusable templates from Day 1."
+      },
+      customerRequirements: {
+        lead: "Summary of our understanding of your current landscape, business drivers, and technical requirements.",
+        businessContext: "[Client Organization Name] is seeking to modernize its core operations to support rapid growth, improve cross-functional visibility, and reduce manual overhead across key business units.",
+        painPoints: [
+          "Fragmented systems leading to manual data reconciliation and reporting delays.",
+          "Limited scalability and high maintenance overhead in current legacy workflows.",
+          "Lack of real-time operational dashboards for leadership decision-making.",
+          "Inconsistent security, auditability, and role-based access controls."
+        ],
+        functionalRequirements: [
+          { id: "FR-01", area: "Core Operations", requirement: "End-to-end digital workflow automation across primary business processes.", priority: "High" },
+          { id: "FR-02", area: "Integrations", requirement: "Bi-directional API/event-driven integration with existing ERP/CRM systems.", priority: "High" },
+          { id: "FR-03", area: "Reporting & Analytics", requirement: "Role-based executive dashboards and exportable operational reports.", priority: "Medium" },
+          { id: "FR-04", area: "User Experience", requirement: "Responsive, intuitive web interface accessible across desktop and mobile.", priority: "Medium" }
+        ],
+        nonFunctionalRequirements: [
+          { category: "Performance", target: "Sub-2 second response time for standard transactions under peak load." },
+          { category: "Security", target: "SSO/MFA integration, TLS 1.3 in transit, AES-256 encryption at rest." },
+          { category: "Availability", target: "99.9% uptime SLA with automated backup and disaster recovery." },
+          { category: "Scalability", target: "Horizontal auto-scaling to support 3x projected transaction volume." }
+        ]
+      },
+      solutionArchitecture: {
+        lead: "End-to-end technical architecture, component layers, security posture, and integration patterns.",
+        overview: "The proposed architecture follows a modular, cloud-ready, layered design. Each layer is decoupled to ensure independent scalability, maintainability, and strict security boundaries.",
+        principles: [
+          "API-First & Event-Driven Integration",
+          "Zero-Trust Security & Role-Based Access",
+          "Cloud-Native Resilience & Observability",
+          "Clean Core & Low-Code Extensibility"
+        ],
+        layers: [
+          { name: "1. Experience & Presentation Layer", tag: "Frontend", description: "Unified, responsive web portal and mobile-ready interfaces with SSO authentication.", components: ["Web Portal UI", "Role-Based Dashboards", "Self-Service Forms", "Identity & SSO (SAML/OIDC)"] },
+          { name: "2. Integration & API Gateway Layer", tag: "Middleware", description: "Centralized API management, rate limiting, schema validation, and asynchronous event routing.", components: ["API Gateway", "REST / GraphQL Endpoints", "Event Bus / Message Queue", "ETL / Data Pipelines"] },
+          { name: "3. Core Application & Business Logic Layer", tag: "Core Platform", description: "Modular microservices or enterprise platform core executing business rules and workflows.", components: ["Workflow Engine", "Business Rules Service", "Notification Service", "Audit & Compliance Engine"] },
+          { name: "4. Data, Analytics & Infrastructure Layer", tag: "Foundation", description: "Managed relational/analytical databases, automated CI/CD, monitoring, and DR.", components: ["Transactional DB", "Analytics Warehouse", "CI/CD Pipelines", "SIEM & Observability"] }
+        ],
+        integrationNotes: "All external integrations will use standardized REST/OData or event-driven patterns with retry policies, dead-letter queues, and centralized logging."
+      },
+      scopeOfWork: {
+        lead: "Detailed breakdown of in-scope workstreams, deliverables, and responsibility boundaries.",
+        overview: "The Scope of Work is organized into clearly defined workstreams to ensure transparency, predictable milestones, and unambiguous sign-off criteria.",
+        workstreams: [
+          { title: "Workstream 1: Discovery & Architecture Design", items: ["Conduct stakeholder workshops and finalize functional specifications.", "Deliver High-Level Design (HLD) and Low-Level Design (LLD) documents.", "Define data migration mapping and integration interface specifications."] },
+          { title: "Workstream 2: Core Build & Configuration", items: ["Provision target environments (DEV, QA, PROD).", "Configure core modules, workflows, and custom extensions.", "Develop and unit-test required APIs and system integrations."] },
+          { title: "Workstream 3: Testing, Migration & Cutover", items: ["Execute System Integration Testing (SIT) and support User Acceptance Testing (UAT).", "Perform mock data loads and production data migration.", "Execute cutover plan, Go-Live support, and hypercare."] }
+        ],
+        deliverablesTable: [
+          { id: "DEL-01", deliverable: "Solution Blueprint & Architecture Document", phase: "Design", owner: "KaarTech", signoff: "Client Tech Lead" },
+          { id: "DEL-02", deliverable: "Configured DEV & QA Environments", phase: "Build", owner: "KaarTech", signoff: "Client Infra Lead" },
+          { id: "DEL-03", deliverable: "Integration & Migration Scripts", phase: "Build", owner: "KaarTech", signoff: "Client Architect" },
+          { id: "DEL-04", deliverable: "SIT & UAT Test Summary Reports", phase: "Test", owner: "Joint", signoff: "Client PM" },
+          { id: "DEL-05", deliverable: "Runbooks, Training & Hypercare Handover", phase: "Deploy", owner: "KaarTech", signoff: "Client Operations" }
+        ]
+      },
+      projectMethodology: {
+        lead: "Structured, phase-gated delivery methodology ensuring quality, predictability, and rapid value.",
+        overview: "We follow an agile-hybrid, phase-gated delivery methodology tailored for enterprise implementations. Each phase concludes with a formal quality gate review and deliverable sign-off.",
+        frameworkName: "KaarTech Hybrid Agile Delivery Framework",
+        phases: [
+          { step: "Phase 01", name: "Discover & Prepare", duration: "Weeks 1 – 2", activities: ["Project kickoff & governance setup", "Requirement validation workshops", "Environment & access provisioning"] },
+          { step: "Phase 02", name: "Explore & Design", duration: "Weeks 3 – 5", activities: ["Fit-to-standard gap analysis", "HLD / LLD & integration specs", "UI/UX prototype walkthrough"] },
+          { step: "Phase 03", name: "Realize & Test", duration: "Weeks 6 – 12", activities: ["Iterative sprint builds & demos", "SIT & performance testing", "User Acceptance Testing (UAT)"] },
+          { step: "Phase 04", name: "Deploy & Hypercare", duration: "Weeks 13 – 16", activities: ["Production cutover & data load", "End-user training & enablement", "4-week hypercare & BAU handover"] }
+        ]
+      },
+      projectManagement: {
+        lead: "Governance structure, communication cadence, team roles, and proactive risk management.",
+        overview: "Strong project governance is central to on-time, on-budget delivery. We establish a joint governance model with clear escalation paths and transparent weekly reporting.",
+        governanceCadence: [
+          { forum: "Daily Stand-up", frequency: "Daily (15 mins)", attendees: "Delivery Leads & Core Squad", purpose: "Track sprint progress and unblockers" },
+          { forum: "Weekly Status Review", frequency: "Weekly", attendees: "Client PM & KaarTech PM", purpose: "Review milestones, RAID log, and burn rate" },
+          { forum: "Steering Committee", frequency: "Monthly / Gate-based", attendees: "Executive Sponsors", purpose: "Strategic decisions, scope changes, gate sign-offs" }
+        ],
+        teamStructure: [
+          { role: "Engagement Director", responsibility: "Executive sponsorship, escalation point, overall quality assurance." },
+          { role: "Project Manager", responsibility: "Day-to-day planning, RAID management, milestone tracking, reporting." },
+          { role: "Solution Architect", responsibility: "End-to-end technical design, integration standards, security compliance." },
+          { role: "Functional & Technical Leads", responsibility: "Configuration, custom development, testing, and knowledge transfer." }
+        ],
+        riskManagement: "All risks, assumptions, issues, and dependencies (RAID) are tracked in a shared register reviewed weekly with severity-based mitigation owners."
+      },
+      scopeExclusions: {
+        lead: "Key project assumptions, explicit exclusions, and client dependencies to ensure clarity.",
+        assumptions: [
+          "Client will provide timely access to environments, VPNs, and relevant SMEs within 5 business days of request.",
+          "All third-party software licenses and cloud infrastructure subscriptions will be procured by the Client.",
+          "Single language (English) and standard business hours support unless otherwise specified in commercial terms.",
+          "Client data provided for migration will be cleansed and validated prior to final cutover."
+        ],
+        exclusions: [
+          "Hardware procurement, data center cabling, or end-user workstation upgrades.",
+          "Remediation of legacy third-party systems not explicitly listed in the Scope of Work.",
+          "Ongoing L1/L2 managed services post-hypercare (available under a separate AMS agreement).",
+          "Customizations or change requests raised after UAT sign-off (handled via Change Request process)."
+        ],
+        dependencies: [
+          "Availability of Client Product Owner for sprint demos and UAT sign-off within agreed SLAs.",
+          "Readiness of external API endpoints owned by third-party vendors."
+        ]
+      },
+      companyProfile: {
+        lead: "About KaarTech — our heritage, global delivery footprint, and enterprise transformation expertise.",
+        overview: "KaarTech is a global digital transformation and enterprise consulting partner specializing in helping organizations modernize their core business systems, adopt cloud-native architectures, and unlock data-driven agility.",
+        stats: [
+          { value: "20+", label: "Years of Excellence", note: "Delivering enterprise transformations" },
+          { value: "3,000+", label: "Consultants", note: "Certified functional & cloud specialists" },
+          { value: "15+", label: "Global Offices", note: "Serving North America, EMEA & APAC" },
+          { value: "500+", label: "Successful Projects", note: "Across diverse industry verticals" }
+        ],
+        coreCapabilities: [
+          "Enterprise ERP & Digital Core Transformation (SAP S/4HANA, BTP, Cloud)",
+          "Cloud Engineering, DevSecOps & Application Modernization",
+          "Data Engineering, Analytics & Enterprise AI Solutions",
+          "Managed Services (AMS) & 24/7 Global Support"
+        ],
+        globalPresence: "With delivery centers across India, the Middle East, Europe, and North America, KaarTech provides a follow-the-sun delivery model combining onshore leadership with offshore scale."
+      },
+      certifications: {
+        lead: "Industry certifications, quality standards, and partner accreditations.",
+        overview: "Our delivery processes and security posture are backed by internationally recognized certifications and strategic technology partner accreditations.",
+        items: [
+          { title: "ISO/IEC 27001", category: "Information Security", description: "Certified Information Security Management System ensuring strict data protection." },
+          { title: "ISO 9001:2015", category: "Quality Management", description: "Standardized quality management across consulting, delivery, and support." },
+          { title: "CMMI Level 3+", category: "Process Maturity", description: "Disciplined, repeatable software engineering and project management practices." },
+          { title: "SAP Gold Partner", category: "Strategic Alliance", description: "Recognized expertise across SAP S/4HANA, Cloud, and Business Technology Platform." },
+          { title: "Cloud Partner Competencies", category: "Hyperscalers", description: "Certified architects across AWS, Microsoft Azure, and Google Cloud Platform." },
+          { title: "SOC 2 Type II", category: "Compliance", description: "Audited controls for security, availability, and processing integrity." }
+        ]
+      },
+      caseStudies: {
+        lead: "Proven track record — selected client success stories and measurable outcomes.",
+        overview: "Below are representative engagements demonstrating how our technical approach translates into tangible business impact. Replace these with your industry-specific references.",
+        studies: [
+          {
+            client: "Global Manufacturing Enterprise",
+            industry: "Industrial Manufacturing",
+            challenge: "Disconnected legacy ERP instances causing 10-day financial close cycles and poor inventory visibility.",
+            solution: "Implemented a unified digital core with automated supply chain workflows and real-time executive analytics.",
+            outcomes: ["40% faster month-end close", "99.5% inventory accuracy", "Delivered on schedule in 20 weeks"]
+          },
+          {
+            client: "Regional Energy & Utilities Leader",
+            industry: "Energy & Utilities",
+            challenge: "Manual field service scheduling and high integration maintenance costs across 12 legacy apps.",
+            solution: "Architected an API-first integration hub and mobile-enabled field service portal on cloud infrastructure.",
+            outcomes: ["35% reduction in dispatch time", "60% fewer integration failures", "Full SSO & audit compliance"]
+          },
+          {
+            client: "Multi-Country Retail Group",
+            industry: "Retail & Distribution",
+            challenge: "Peak-season performance bottlenecks and lack of omnichannel order visibility.",
+            solution: "Migrated core workloads to auto-scaling cloud architecture with event-driven order orchestration.",
+            outcomes: ["3x peak load capacity", "99.95% uptime during peak", "25% lower infrastructure TCO"]
+          }
+        ]
+      }
+    };
+
+    /* ========================================================================
+       SINGLE-FILE SPA ROUTER & SECTION RENDERERS
+       ======================================================================== */
+    const PAGES = [
+      { id: "home", num: "00", title: "Home", group: "Overview", desc: "Proposal cover, client details, and section directory." },
+      { id: "executive-summary", num: "01", title: "Executive summary", group: "Proposal Sections", desc: "Strategic alignment, key outcomes, and business value." },
+      { id: "customer-requirements", num: "02", title: "Understanding of the customer & Requirements", group: "Proposal Sections", desc: "Business context, pain points, functional & NFRs." },
+      { id: "solution-architecture", num: "03", title: "Solution architecture", group: "Proposal Sections", desc: "Layered architecture, components, and integration patterns." },
+      { id: "scope-of-work", num: "04", title: "Scope of work", group: "Proposal Sections", desc: "In-scope workstreams, deliverables, and sign-off matrix." },
+      { id: "project-methodology", num: "05", title: "Project Methodology", group: "Proposal Sections", desc: "Phase-gated delivery framework and timeline." },
+      { id: "project-management", num: "06", title: "Project Management", group: "Proposal Sections", desc: "Governance cadence, team roles, and RAID management." },
+      { id: "scope-exclusions", num: "07", title: "Scope considerations and exclusions", group: "Proposal Sections", desc: "Assumptions, explicit exclusions, and dependencies." },
+      { id: "appendix-company-profile", num: "08", title: "Appendix I - Company profile", group: "Appendices", desc: "About KaarTech, global footprint, and capabilities." },
+      { id: "appendix-certifications", num: "09", title: "Appendix II - Certifications", group: "Appendices", desc: "ISO, CMMI, security, and partner accreditations." },
+      { id: "appendix-case-studies", num: "10", title: "Appendix III - Case studies", group: "Appendices", desc: "Selected client transformations and measurable outcomes." }
+    ];
+
+    function esc(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderPageContent(pageId) {
+      const d = window.PROPOSAL_DATA;
+      switch (pageId) {
+        case "home": {
+          const cards = PAGES.filter((p) => p.id !== "home").map((s) => `
+            <a class="toc-card" href="#${s.id}">
+              <div>
+                <div class="toc-card-num">Section ${esc(s.num)}</div>
+                <div class="toc-card-title">${esc(s.title)}</div>
+                <p class="toc-card-desc">${esc(s.desc)}</p>
+              </div>
+              <span class="toc-card-link">Open Section →</span>
+            </a>
+          `).join("");
+          return `
+            <section class="hero-banner">
+              <div class="hero-kicker">${esc(d.meta.proposalTitle)}</div>
+              <h1 class="hero-title">${esc(d.meta.projectTitle)}</h1>
+              <p class="hero-subtitle">${esc(d.meta.subtitle)}</p>
+              <div class="hero-meta-grid">
+                <div class="hero-meta-item"><label>Prepared For</label><span>${esc(d.meta.clientName)}</span></div>
+                <div class="hero-meta-item"><label>Prepared By</label><span>${esc(d.meta.preparedBy)}</span></div>
+                <div class="hero-meta-item"><label>Date</label><span>${esc(d.meta.date)}</span></div>
+                <div class="hero-meta-item"><label>Validity</label><span>${esc(d.meta.validUntil)}</span></div>
+              </div>
+              <div class="hero-actions">
+                <a class="btn-primary" href="#executive-summary">Start Reading Proposal →</a>
+                <button class="btn-secondary" type="button" onclick="window.print()">Print / Export PDF</button>
+              </div>
+            </section>
+            <div class="card card-accent-top mb-24">
+              <h2 class="card-title">${esc(d.home.welcomeHeading)}</h2>
+              <p>${esc(d.home.welcomeText)}</p>
+            </div>
+            <h2 class="card-title mt-24">Proposal Sections</h2>
+            <div class="toc-grid">${cards}</div>
+          `;
+        }
+        case "executive-summary": {
+          const s = d.executiveSummary;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 01</div>
+              <h1 class="section-title">Executive summary</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="grid-4 mb-24">${s.kpis.map((k) => `<div class="kpi-card"><div class="kpi-value">${esc(k.value)}</div><div class="kpi-label">${esc(k.label)}</div><div class="kpi-note">${esc(k.note)}</div></div>`).join("")}</div>
+            <div class="card card-accent-top mb-24"><h2 class="card-title">Engagement Overview</h2><p>${esc(s.overview)}</p></div>
+            <div class="card mb-24"><h2 class="card-title">Strategic Objectives</h2><ul class="styled-list">${s.strategicObjectives.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></div>
+            <div class="callout callout-orange"><div class="callout-title">Value Proposition</div><p>${esc(s.valueProposition)}</p></div>
+          `;
+        }
+        case "customer-requirements": {
+          const s = d.customerRequirements;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 02</div>
+              <h1 class="section-title">Understanding of the customer &amp; Requirements</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="grid-2 mb-24">
+              <div class="card card-accent-top"><h2 class="card-title">Business Context</h2><p>${esc(s.businessContext)}</p></div>
+              <div class="card card-orange-top"><h2 class="card-title">Key Challenges &amp; Pain Points</h2><ul class="styled-list">${s.painPoints.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>
+            </div>
+            <h2 class="card-title mt-24 mb-16">Functional Requirements</h2>
+            <div class="table-wrap mb-24">
+              <table>
+                <thead><tr><th>ID</th><th>Area</th><th>Requirement Description</th><th>Priority</th></tr></thead>
+                <tbody>${s.functionalRequirements.map((r) => `<tr><td><strong>${esc(r.id)}</strong></td><td>${esc(r.area)}</td><td>${esc(r.requirement)}</td><td><span class="badge ${r.priority === "High" ? "badge-red" : "badge-orange"}">${esc(r.priority)}</span></td></tr>`).join("")}</tbody>
+              </table>
+            </div>
+            <h2 class="card-title mt-24 mb-16">Non-Functional Requirements (NFRs)</h2>
+            <div class="grid-2">${s.nonFunctionalRequirements.map((n) => `<div class="card card-orange-top"><div class="card-title">${esc(n.category)}</div><p>${esc(n.target)}</p></div>`).join("")}</div>
+          `;
+        }
+        case "solution-architecture": {
+          const s = d.solutionArchitecture;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 03</div>
+              <h1 class="section-title">Solution architecture</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="card card-accent-top mb-24">
+              <h2 class="card-title">Architectural Overview &amp; Principles</h2>
+              <p class="mb-16">${esc(s.overview)}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">${s.principles.map((p) => `<span class="badge badge-red" style="padding:6px 12px;font-size:0.82rem;">${esc(p)}</span>`).join("")}</div>
+            </div>
+            <h2 class="card-title mb-16">Layered Technical Blueprint</h2>
+            <div class="arch-stack mb-24">
+              ${s.layers.map((l) => `
+                <div class="arch-layer">
+                  <div class="arch-layer-header"><div class="arch-layer-title">${esc(l.name)}</div><span class="badge badge-orange">${esc(l.tag)}</span></div>
+                  <p class="card-subtitle">${esc(l.description)}</p>
+                  <div class="arch-chips">${l.components.map((c) => `<span class="arch-chip">${esc(c)}</span>`).join("")}</div>
+                </div>
+              `).join("")}
+            </div>
+            <div class="callout"><div class="callout-title">Integration &amp; Reliability Pattern</div><p>${esc(s.integrationNotes)}</p></div>
+          `;
+        }
+        case "scope-of-work": {
+          const s = d.scopeOfWork;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 04</div>
+              <h1 class="section-title">Scope of work</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="card mb-24"><p>${esc(s.overview)}</p></div>
+            <div class="grid-3 mb-24">${s.workstreams.map((w) => `<div class="card card-accent-top"><h2 class="card-title">${esc(w.title)}</h2><ul class="styled-list">${w.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}</div>
+            <h2 class="card-title mt-24 mb-16">Key Deliverables &amp; Sign-Off Matrix</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>Deliverable</th><th>Phase</th><th>Owner</th><th>Sign-Off Authority</th></tr></thead>
+                <tbody>${s.deliverablesTable.map((x) => `<tr><td><strong>${esc(x.id)}</strong></td><td>${esc(x.deliverable)}</td><td><span class="badge badge-grey">${esc(x.phase)}</span></td><td>${esc(x.owner)}</td><td>${esc(x.signoff)}</td></tr>`).join("")}</tbody>
+              </table>
+            </div>
+          `;
+        }
+        case "project-methodology": {
+          const s = d.projectMethodology;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 05</div>
+              <h1 class="section-title">Project Methodology</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="callout mb-24"><div class="callout-title">${esc(s.frameworkName)}</div><p>${esc(s.overview)}</p></div>
+            <h2 class="card-title mb-16">Delivery Phases &amp; Timeline</h2>
+            <div class="phase-timeline">${s.phases.map((p) => `<div class="phase-card"><div class="phase-step">${esc(p.step)}</div><div class="phase-name">${esc(p.name)}</div><div class="phase-duration">${esc(p.duration)}</div><ul class="styled-list">${p.activities.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`).join("")}</div>
+          `;
+        }
+        case "project-management": {
+          const s = d.projectManagement;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 06</div>
+              <h1 class="section-title">Project Management</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="card mb-24"><p>${esc(s.overview)}</p></div>
+            <h2 class="card-title mb-16">Governance &amp; Communication Cadence</h2>
+            <div class="table-wrap mb-24">
+              <table>
+                <thead><tr><th>Forum</th><th>Frequency</th><th>Attendees</th><th>Purpose</th></tr></thead>
+                <tbody>${s.governanceCadence.map((g) => `<tr><td><strong>${esc(g.forum)}</strong></td><td><span class="badge badge-orange">${esc(g.frequency)}</span></td><td>${esc(g.attendees)}</td><td>${esc(g.purpose)}</td></tr>`).join("")}</tbody>
+              </table>
+            </div>
+            <h2 class="card-title mt-24 mb-16">Core Delivery Team Structure</h2>
+            <div class="grid-2 mb-24">${s.teamStructure.map((t) => `<div class="card card-accent-top"><div class="card-title">${esc(t.role)}</div><p>${esc(t.responsibility)}</p></div>`).join("")}</div>
+            <div class="callout callout-orange"><div class="callout-title">RAID &amp; Risk Governance</div><p>${esc(s.riskManagement)}</p></div>
+          `;
+        }
+        case "scope-exclusions": {
+          const s = d.scopeExclusions;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 07</div>
+              <h1 class="section-title">Scope considerations and exclusions</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="grid-2 mb-24">
+              <div class="card card-accent-top"><h2 class="card-title">Key Project Assumptions</h2><ul class="styled-list">${s.assumptions.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>
+              <div class="card card-orange-top"><h2 class="card-title">Explicit Exclusions</h2><ul class="styled-list">${s.exclusions.map((e) => `<li>${esc(e)}</li>`).join("")}</ul></div>
+            </div>
+            <div class="card"><h2 class="card-title">Client &amp; Third-Party Dependencies</h2><ul class="styled-list">${s.dependencies.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+          `;
+        }
+        case "appendix-company-profile": {
+          const s = d.companyProfile;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 08 • Appendix I</div>
+              <h1 class="section-title">Appendix I - Company profile</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="grid-4 mb-24">${s.stats.map((k) => `<div class="kpi-card"><div class="kpi-value">${esc(k.value)}</div><div class="kpi-label">${esc(k.label)}</div><div class="kpi-note">${esc(k.note)}</div></div>`).join("")}</div>
+            <div class="card card-accent-top mb-24"><h2 class="card-title">About KaarTech</h2><p>${esc(s.overview)}</p></div>
+            <div class="grid-2">
+              <div class="card"><h2 class="card-title">Core Capabilities</h2><ul class="styled-list">${s.coreCapabilities.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
+              <div class="card card-orange-top"><h2 class="card-title">Global Delivery Model</h2><p>${esc(s.globalPresence)}</p></div>
+            </div>
+          `;
+        }
+        case "appendix-certifications": {
+          const s = d.certifications;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 09 • Appendix II</div>
+              <h1 class="section-title">Appendix II - Certifications</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="card mb-24"><p>${esc(s.overview)}</p></div>
+            <div class="grid-3">${s.items.map((c) => `<div class="card card-accent-top"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;"><h2 class="card-title" style="margin:0;">${esc(c.title)}</h2><span class="badge badge-red">${esc(c.category)}</span></div><p>${esc(c.description)}</p></div>`).join("")}</div>
+          `;
+        }
+        case "appendix-case-studies": {
+          const s = d.caseStudies;
+          return `
+            <div class="section-header">
+              <div class="section-eyebrow">Section 10 • Appendix III</div>
+              <h1 class="section-title">Appendix III - Case studies</h1>
+              <p class="section-lead">${esc(s.lead)}</p>
+            </div>
+            <div class="card mb-24"><p>${esc(s.overview)}</p></div>
+            ${s.studies.map((st) => `
+              <div class="card card-accent-top mb-24">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                  <h2 class="card-title" style="margin:0;">${esc(st.client)}</h2>
+                  <span class="badge badge-orange">${esc(st.industry)}</span>
+                </div>
+                <div class="grid-3">
+                  <div><div class="nav-group-label" style="padding:0 0 6px;color:var(--kt-dark-grey);">Challenge</div><p>${esc(st.challenge)}</p></div>
+                  <div><div class="nav-group-label" style="padding:0 0 6px;color:var(--kt-dark-grey);">Solution</div><p>${esc(st.solution)}</p></div>
+                  <div><div class="nav-group-label" style="padding:0 0 6px;color:var(--kt-red);">Business Outcomes</div><ul class="styled-list">${st.outcomes.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></div>
+                </div>
+              </div>
+            `).join("")}
+          `;
+        }
+        default:
+          return "";
+      }
+    }
+
+    function renderApp() {
+      const hash = (window.location.hash || "#home").replace("#", "");
+      const currentIndex = Math.max(0, PAGES.findIndex((p) => p.id === hash));
+      const currentPage = PAGES[currentIndex];
+      const data = window.PROPOSAL_DATA;
+
+      document.title = `${currentPage.title} | ${data.meta.brandName} — ${data.meta.proposalTitle}`;
+
+      // Sidebar
+      const groups = ["Overview", "Proposal Sections", "Appendices"];
+      const navHtml = groups.map((group) => {
+        const links = PAGES.filter((p) => p.group === group).map((p) => `
+          <a class="nav-link ${p.id === currentPage.id ? "active" : ""}" href="#${p.id}">
+            <span class="nav-num">${p.num}</span>
+            <span>${esc(p.title)}</span>
+          </a>
+        `).join("");
+        return `<div class="nav-group-label">${group}</div>${links}`;
+      }).join("");
+
+      const sidebarEl = document.getElementById("app-sidebar");
+      sidebarEl.innerHTML = `
+        <div class="sidebar-brand">
+          <div class="brand-mark">${esc(data.meta.brandInitials)}</div>
+          <div class="brand-text">
+            <span class="brand-name">${esc(data.meta.brandName)}</span>
+            <span class="brand-tagline">${esc(data.meta.brandTagline)}</span>
+          </div>
+        </div>
+        <div class="sidebar-meta">
+          <div class="sidebar-meta-label">Prepared For</div>
+          <div class="sidebar-meta-client" title="${esc(data.meta.clientName)}">${esc(data.meta.clientName)}</div>
+        </div>
+        <nav class="sidebar-nav" aria-label="Proposal Sections">${navHtml}</nav>
+        <div class="sidebar-footer">
+          <button class="btn-print" onclick="window.print()" type="button">⎙ Print / Save as PDF</button>
+          <div>ID: ${esc(data.meta.proposalId)} • ${esc(data.meta.date)}</div>
+        </div>
+      `;
+
+      // Topbar
+      document.getElementById("app-topbar").innerHTML = `
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+          <div class="breadcrumb">
+            <a href="#home">${esc(data.meta.proposalTitle)}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">${esc(currentPage.title)}</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="proposal-badge"><span class="status-dot"></span>${esc(data.meta.statusBadge)}</span>
+        </div>
+      `;
+
+      document.getElementById("mobile-menu-toggle").addEventListener("click", () => {
+        sidebarEl.classList.toggle("open");
+      });
+
+      // Close mobile sidebar after clicking a link
+      sidebarEl.classList.remove("open");
+
+      // Main content
+      document.getElementById("page-root").innerHTML = renderPageContent(currentPage.id);
+
+      // Pagination
+      const prev = currentIndex > 0 ? PAGES[currentIndex - 1] : null;
+      const next = currentIndex < PAGES.length - 1 ? PAGES[currentIndex + 1] : null;
+      document.getElementById("page-pagination").innerHTML = `
+        ${prev ? `<a class="page-nav-btn prev" href="#${prev.id}"><span class="page-nav-dir">← Previous</span><span class="page-nav-title">${esc(prev.num + ". " + prev.title)}</span></a>` : `<div></div>`}
+        ${next ? `<a class="page-nav-btn next" href="#${next.id}"><span class="page-nav-dir">Next →</span><span class="page-nav-title">${esc(next.num + ". " + next.title)}</span></a>` : `<div></div>`}
+      `;
+
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+
+    function getDefaultCoverSvg(clientName) {
+      return `
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Customer Office Illustration">
+          <defs>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1E1E20" />
+              <stop offset="60%" stop-color="#3A1516" />
+              <stop offset="100%" stop-color="#9D0102" />
+            </linearGradient>
+            <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22" />
+              <stop offset="100%" stop-color="#C0C0C0" stop-opacity="0.06" />
+            </linearGradient>
+          </defs>
+          <rect width="800" height="450" fill="url(#skyGrad)" />
+          <circle cx="670" cy="95" r="56" fill="#FF3F00" fill-opacity="0.24" />
+          <circle cx="670" cy="95" r="34" fill="#FF3F00" fill-opacity="0.35" />
+          <!-- Left Tower -->
+          <rect x="110" y="150" width="150" height="250" rx="4" fill="#2A2A2D" stroke="#606062" stroke-width="2" />
+          <rect x="128" y="172" width="114" height="210" fill="url(#glassGrad)" />
+          <!-- Center Main Customer Tower -->
+          <rect x="285" y="90" width="230" height="310" rx="4" fill="#1F1F22" stroke="#C0C0C0" stroke-width="2" />
+          <rect x="305" y="115" width="190" height="265" fill="url(#glassGrad)" />
+          <line x1="305" y1="165" x2="495" y2="165" stroke="#C0C0C0" stroke-opacity="0.3" stroke-width="1.5" />
+          <line x1="305" y1="215" x2="495" y2="215" stroke="#C0C0C0" stroke-opacity="0.3" stroke-width="1.5" />
+          <line x1="305" y1="265" x2="495" y2="265" stroke="#C0C0C0" stroke-opacity="0.3" stroke-width="1.5" />
+          <line x1="305" y1="315" x2="495" y2="315" stroke="#C0C0C0" stroke-opacity="0.3" stroke-width="1.5" />
+          <line x1="368" y1="115" x2="368" y2="380" stroke="#C0C0C0" stroke-opacity="0.25" stroke-width="1.5" />
+          <line x1="432" y1="115" x2="432" y2="380" stroke="#C0C0C0" stroke-opacity="0.25" stroke-width="1.5" />
+          <!-- Right Wing -->
+          <rect x="540" y="190" width="150" height="210" rx="4" fill="#2A2A2D" stroke="#606062" stroke-width="2" />
+          <rect x="558" y="212" width="114" height="170" fill="url(#glassGrad)" />
+          <!-- Ground Accent -->
+          <rect x="0" y="400" width="800" height="50" fill="#141416" />
+          <rect x="0" y="398" width="800" height="4" fill="#FF3F00" />
+          <text x="400" y="430" text-anchor="middle" fill="#C0C0C0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="1.5">${esc(clientName.toUpperCase())}</text>
+        </svg>
+      `;
+    }
+
+    function renderPrintDocument() {
+      const d = window.PROPOSAL_DATA;
+      const sections = PAGES.filter((p) => p.id !== "home");
+
+      const coverMedia = d.meta.coverImageUrl
+        ? `<img src="${esc(d.meta.coverImageUrl)}" alt="Customer Office" />`
+        : getDefaultCoverSvg(d.meta.clientName);
+
+      // 1. Cover Page
+      const coverHtml = `
+        <section class="print-cover">
+          <div class="print-cover-image-wrap">${coverMedia}</div>
+          <div class="print-cover-title-wrap">
+            <h1 class="print-cover-title">${esc(d.meta.coverTitle || "Technical proposal for mentioned scope")}</h1>
+          </div>
+          <div class="print-cover-date-row">
+            <div class="print-cover-date">${esc(d.meta.date)}</div>
+          </div>
+        </section>
+      `;
+
+      // 2. Version Control & Document Confidentiality Page
+      const vcRows = (d.versionControl || []).map((v) => `
+        <tr>
+          <td><strong>${esc(v.version)}</strong></td>
+          <td>${esc(v.date)}</td>
+          <td>${esc(v.author)}</td>
+          <td>${esc(v.description)}</td>
+        </tr>
+      `).join("");
+
+      const versionAndConfidentialityHtml = `
+        <section class="print-page-break print-doc-meta-page">
+          <div class="section-header">
+            <div class="section-eyebrow">Document Control</div>
+            <h1 class="section-title">Version Control &amp; Confidentiality</h1>
+          </div>
+          <h2 class="card-title mb-16">Version Control</h2>
+          <div class="table-wrap mb-24">
+            <table>
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Date</th>
+                  <th>Author</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>${vcRows}</tbody>
+            </table>
+          </div>
+          <div class="callout" style="margin-top:28px;">
+            <div class="callout-title">Document Confidentiality</div>
+            <p>${esc(d.confidentialityNotice)}</p>
+          </div>
+        </section>
+      `;
+
+      // 3. Table of Contents Page
+      const tocItems = sections.map((s) => `
+        <li class="print-toc-item">
+          <span class="print-toc-num">${esc(s.num)}</span>
+          <span class="print-toc-title">${esc(s.title)}</span>
+          <span class="print-toc-group">${esc(s.group)}</span>
+        </li>
+      `).join("");
+
+      const tocHtml = `
+        <section class="print-page-break print-doc-meta-page">
+          <div class="section-header">
+            <div class="section-eyebrow">Navigation</div>
+            <h1 class="section-title">Table of Contents</h1>
+          </div>
+          <ul class="print-toc-list">${tocItems}</ul>
+        </section>
+      `;
+
+      // 4. All 10 Technical Sections (each starting on a new page)
+      const sectionsHtml = sections.map((s) => `
+        <section class="print-page-break">
+          ${renderPageContent(s.id)}
+        </section>
+      `).join("");
+
+      document.getElementById("print-document").innerHTML =
+        coverHtml + versionAndConfidentialityHtml + tocHtml + sectionsHtml;
+    }
+
+    window.addEventListener("hashchange", renderApp);
+    window.addEventListener("beforeprint", renderPrintDocument);
+    window.addEventListener("DOMContentLoaded", () => {
+      renderApp();
+      renderPrintDocument();
+    });
+  </script>
+</body>
+</html>

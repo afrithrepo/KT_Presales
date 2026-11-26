@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Methodology</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="section-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/proposal-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    ProposalApp.initShell("project-methodology");
+    (function () {
+      const s = window.PROPOSAL_DATA.projectMethodology;
+      const esc = ProposalApp.escapeHtml;
+
+      const phasesHtml = s.phases
+        .map(
+          (p) => `
+          <div class="phase-card">
+            <div class="phase-step">${esc(p.step)}</div>
+            <div class="phase-name">${esc(p.name)}</div>
+            <div class="phase-duration">${esc(p.duration)}</div>
+            <ul class="styled-list">
+              ${p.activities.map((a) => `<li>${esc(a)}</li>`).join("")}
+            </ul>
+          </div>
+        `
+        )
+        .join("");
+
+      document.getElementById("section-root").innerHTML = `
+        <div class="section-header">
+          <div class="section-eyebrow">Section 05</div>
+          <h1 class="section-title">Project Methodology</h1>
+          <p class="section-lead">${esc(s.lead)}</p>
+        </div>
+
+        <div class="callout mb-24">
+          <div class="callout-title">${esc(s.frameworkName)}</div>
+          <p>${esc(s.overview)}</p>
+        </div>
+
+        <h2 class="card-title mb-16">Delivery Phases &amp; Timeline</h2>
+        <div class="phase-timeline">${phasesHtml}</div>
+      `;
+    })();
+  </script>
+</body>
+</html>

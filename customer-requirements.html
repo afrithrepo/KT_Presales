@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding of the customer &amp; Requirements</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="section-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/proposal-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    ProposalApp.initShell("customer-requirements");
+    (function () {
+      const s = window.PROPOSAL_DATA.customerRequirements;
+      const esc = ProposalApp.escapeHtml;
+
+      const painHtml = s.painPoints.map((p) => `<li>${esc(p)}</li>`).join("");
+      const frHtml = s.functionalRequirements
+        .map(
+          (r) => `
+          <tr>
+            <td><strong>${esc(r.id)}</strong></td>
+            <td>${esc(r.area)}</td>
+            <td>${esc(r.requirement)}</td>
+            <td><span class="badge ${r.priority === "High" ? "badge-red" : "badge-orange"}">${esc(r.priority)}</span></td>
+          </tr>
+        `
+        )
+        .join("");
+
+      const nfrHtml = s.nonFunctionalRequirements
+        .map(
+          (n) => `
+          <div class="card card-orange-top">
+            <div class="card-title">${esc(n.category)}</div>
+            <p>${esc(n.target)}</p>
+          </div>
+        `
+        )
+        .join("");
+
+      document.getElementById("section-root").innerHTML = `
+        <div class="section-header">
+          <div class="section-eyebrow">Section 02</div>
+          <h1 class="section-title">Understanding of the customer &amp; Requirements</h1>
+          <p class="section-lead">${esc(s.lead)}</p>
+        </div>
+
+        <div class="grid-2 mb-24">
+          <div class="card card-accent-top">
+            <h2 class="card-title">Business Context</h2>
+            <p>${esc(s.businessContext)}</p>
+          </div>
+          <div class="card card-orange-top">
+            <h2 class="card-title">Key Challenges &amp; Pain Points</h2>
+            <ul class="styled-list">${painHtml}</ul>
+          </div>
+        </div>
+
+        <h2 class="card-title mt-24 mb-16">Functional Requirements</h2>
+        <div class="table-wrap mb-24">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Area</th>
+                <th>Requirement Description</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>${frHtml}</tbody>
+          </table>
+        </div>
+
+        <h2 class="card-title mt-24 mb-16">Non-Functional Requirements (NFRs)</h2>
+        <div class="grid-2">${nfrHtml}</div>
+      `;
+    })();
+  </script>
+</body>
+</html>

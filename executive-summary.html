@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive summary</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="app-sidebar"></aside>
+    <div class="main-wrapper">
+      <header class="topbar" id="app-topbar"></header>
+      <main class="page-content">
+        <div id="section-root"></div>
+        <div class="page-pagination" id="page-pagination"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/proposal-config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    ProposalApp.initShell("executive-summary");
+    (function () {
+      const s = window.PROPOSAL_DATA.executiveSummary;
+      const esc = ProposalApp.escapeHtml;
+
+      const kpisHtml = s.kpis
+        .map(
+          (k) => `
+          <div class="kpi-card">
+            <div class="kpi-value">${esc(k.value)}</div>
+            <div class="kpi-label">${esc(k.label)}</div>
+            <div class="kpi-note">${esc(k.note)}</div>
+          </div>
+        `
+        )
+        .join("");
+
+      const objHtml = s.strategicObjectives.map((o) => `<li>${esc(o)}</li>`).join("");
+
+      document.getElementById("section-root").innerHTML = `
+        <div class="section-header">
+          <div class="section-eyebrow">Section 01</div>
+          <h1 class="section-title">Executive summary</h1>
+          <p class="section-lead">${esc(s.lead)}</p>
+        </div>
+
+        <div class="grid-4 mb-24">${kpisHtml}</div>
+
+        <div class="card card-accent-top mb-24">
+          <h2 class="card-title">Engagement Overview</h2>
+          <p>${esc(s.overview)}</p>
+        </div>
+
+        <div class="card mb-24">
+          <h2 class="card-title">Strategic Objectives</h2>
+          <ul class="styled-list">${objHtml}</ul>
+        </div>
+
+        <div class="callout callout-orange">
+          <div class="callout-title">Value Proposition</div>
+          <p>${esc(s.valueProposition)}</p>
+        </div>
+      `;
+    })();
+  </script>
+</body>
+</html>
